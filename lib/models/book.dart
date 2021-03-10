@@ -6,6 +6,7 @@ class Book {
   Map<String, String> link;
   double star;
   String articleId;
+  bool favorite;
 
   Book(
       {this.title,
@@ -14,5 +15,6 @@ class Book {
       this.info,
       this.link,
       this.star,
-      this.articleId});
+      this.articleId,
+      this.favorite});
 }

@@ -33,12 +33,22 @@ class BookItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      child: Text(
-                        data.title,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue[900]),
-                      ),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 9,
+                                child: Container(
+                                    child: Text(
+                                  data.title,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue[900]),
+                                ))),
+                            data.favorite
+                                ? Icon(Icons.favorite, color: Colors.red)
+                                : Icon(Icons.favorite, color: Colors.grey),
+                          ]),
                       margin: EdgeInsets.only(bottom: 20.0),
                     ),
                     Container(
