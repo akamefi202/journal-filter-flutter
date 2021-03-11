@@ -31,10 +31,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   // get books of category
   Future<void> getBooks() async {
-    String url = 'https://journalfilter.com/Api.php?discipline=cardiology&' +
-        this.category.type +
-        '=' +
-        this.category.url;
+    String url =
+        'https://journalfilter.com/Api.php?discipline=cardiology&' + this.category.type + '=' + this.category.url;
 
     setState(() {
       loading = true;
@@ -92,6 +90,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       return DropdownMenuItem(child: Text(value), value: value);
                     }).toList())
               ],
+              centerTitle: true,
             )),
         body: LoadingOverlay(
             isLoading: this.loading,
@@ -99,9 +98,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               margin: EdgeInsets.all(10.0),
               child: ListView.builder(
                   itemBuilder: (context, i) {
-                    return Container(
-                        child: BookItem(data: this.bookList[i]),
-                        padding: EdgeInsets.all(10.0));
+                    return Container(child: BookItem(data: this.bookList[i]), padding: EdgeInsets.all(10.0));
                   },
                   itemCount: this.bookList.length),
             )));

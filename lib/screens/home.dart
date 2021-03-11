@@ -49,15 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(defAppBarHeight),
-          child: AppBar(title: Text(getAppBarTitle()))),
+          child: AppBar(title: Text(getAppBarTitle()), centerTitle: true)),
       body: getMainScreen(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blue,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.email), label: 'Contact Us'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.description), label: 'Disclaimer')
+          BottomNavigationBarItem(icon: Icon(Icons.description), label: 'Disclaimer')
         ],
         currentIndex: this.selIndex,
         selectedItemColor: Colors.white,
