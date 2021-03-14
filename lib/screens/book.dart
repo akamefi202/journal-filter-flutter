@@ -4,10 +4,11 @@ import 'package:journal_filter/models/book.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:url_launcher/url_launcher.dart';
-//import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:journal_filter/constants/size.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:journal_filter/modules/encoding.dart';
 
 class BookScreen extends StatefulWidget {
   static const routeName = 'screens/book';
@@ -18,8 +19,11 @@ class BookScreen extends StatefulWidget {
 }
 
 class _BookScreenState extends State<BookScreen> {
-  Book bookData;
-  bool favorite = false;
+  List<Book> books;
+  int bookIndex = 0;
+  // storage saves favorite value
+  final LocalStorage favoStorage = LocalStorage('journal_filter');
+  PageController pageController = PageController(initialPage: 0);
 
   @override
   void initState() {
@@ -30,8 +34,10 @@ class _BookScreenState extends State<BookScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    bookData = ModalRoute.of(context).settings.arguments;
-    print(bookData.contents);
+    Map<String, dynamic> arguments = ModalRoute.of(context).settings.arguments;
+    books = arguments['bookList'];
+    bookIndex = arguments['bookIndex'];
+    pageController = PageController(initialPage: bookIndex);
   }
 
   List<Widget> getButtons() {
@@ -40,8 +46,7 @@ class _BookScreenState extends State<BookScreen> {
           child:
               Text('PDF', style: TextStyle(color: Colors.white, fontSize: 16)),
           onPressed: () async {
-            String url = bookData.link['pdf'];
-            print(url);
+            String url = books[bookIndex].link['pdf'];
 
             if (await canLaunch(url)) {
               await launch(url);
@@ -53,8 +58,7 @@ class _BookScreenState extends State<BookScreen> {
           child:
               Text('PUB', style: TextStyle(color: Colors.white, fontSize: 16)),
           onPressed: () async {
-            String url = bookData.link['pub'];
-            print(url);
+            String url = books[bookIndex].link['pub'];
 
             if (await canLaunch(url)) {
               await launch(url);
@@ -66,8 +70,7 @@ class _BookScreenState extends State<BookScreen> {
           child:
               Text('DOI', style: TextStyle(color: Colors.white, fontSize: 16)),
           onPressed: () async {
-            String url = bookData.link['doi'];
-            print(url);
+            String url = books[bookIndex].link['doi'];
 
             if (await canLaunch(url)) {
               await launch(url);
@@ -83,8 +86,7 @@ class _BookScreenState extends State<BookScreen> {
                 bookData.link['mainlink']);*/
             String url = Uri.encodeFull('https://wa.me/?text=' +
                 'I found this interesting paper on JournalFilter: ' +
-                bookData.link['mainlink']);
-            print(url);
+                books[bookIndex].link['mainlink']);
 
             if (await canLaunch(url)) {
               await launch(url);
@@ -98,15 +100,15 @@ class _BookScreenState extends State<BookScreen> {
             final Email email = Email(
                 body: '<br/><br/><br/>' +
                     'I found this interesting paper on JournalFilter.<br/><br/>' +
-                    bookData.link['mainlink'] +
+                    books[bookIndex].link['mainlink'] +
                     '<br/><br/>' +
-                    bookData.title +
+                    books[bookIndex].title +
                     '<br/><br/>' +
-                    bookData.postman +
+                    books[bookIndex].postman +
                     '<br/><br/>' +
-                    bookData.info +
+                    books[bookIndex].info +
                     '<br/><br/>' +
-                    bookData.contents,
+                    books[bookIndex].contents,
                 subject: 'Interesting research I found on JournalFilter.',
                 recipients: [''],
                 cc: [''],
@@ -115,6 +117,42 @@ class _BookScreenState extends State<BookScreen> {
             await FlutterEmailSender.send(email);
           }),
     ];
+  }
+
+  Widget getPageContent(Book book) {
+    return SingleChildScrollView(
+        padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                child: Text(
+                  book.title,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.blue[900]),
+                ),
+                padding: EdgeInsets.only(left: 20.0, right: 20.0)),
+            SizedBox(
+              height: 10.0,
+            ),
+            Container(
+                child: Text(book.postman,
+                    style: TextStyle(fontStyle: FontStyle.italic)),
+                padding: EdgeInsets.only(left: 20.0, right: 20.0)),
+            SizedBox(height: 10.0),
+            Container(
+                child: Text(book.info),
+                padding: EdgeInsets.only(left: 20.0, right: 20.0)),
+            SizedBox(
+              height: 10.0,
+            ),
+            Container(
+                padding: EdgeInsets.only(left: 12.0, right: 12.0),
+                child: Html(
+                  data: book.contents,
+                ))
+          ],
+        ));
   }
 
   @override
@@ -153,48 +191,28 @@ class _BookScreenState extends State<BookScreen> {
                 }),
             IconButton(
                 icon: Icon(
-                    this.favorite
+                    this.books[bookIndex].favorite
                         ? Icons.favorite
                         : Icons.favorite_border_outlined,
                     color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    this.favorite = !this.favorite;
+                    this.books[bookIndex].favorite =
+                        !this.books[bookIndex].favorite;
+                    favoStorage.setItem(this.books[bookIndex].articleId,
+                        this.books[bookIndex].favorite);
                   });
                 })
           ])),
-      body: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                  child: Text(
-                    bookData.title,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.blue[900]),
-                  ),
-                  padding: EdgeInsets.only(left: 20.0, right: 20.0)),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                  child: Text(bookData.postman),
-                  padding: EdgeInsets.only(left: 20.0, right: 20.0)),
-              SizedBox(height: 10.0),
-              Container(
-                  child: Text(bookData.info),
-                  padding: EdgeInsets.only(left: 20.0, right: 20.0)),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Html(
-                    data: bookData.contents,
-                  ))
-            ],
-          )),
+      body: PageView(
+        controller: this.pageController,
+        children: this.books.map((book) => getPageContent(book)).toList(),
+        onPageChanged: (index) {
+          setState(() {
+            this.bookIndex = index;
+          });
+        },
+      ),
       /*floatingActionButton:
             OrientationBuilder(builder: (context, orientation) {
           return FabCircularMenu(

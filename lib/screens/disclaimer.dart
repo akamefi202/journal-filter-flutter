@@ -22,7 +22,6 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
           child: Html(
               data: disclaimer,
               onLinkTap: (String url) async {
-                print(url);
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {

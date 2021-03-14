@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:journal_filter/constants/size.dart';
+import 'package:localstorage/localstorage.dart';
 
 class ContactUsScreen extends StatefulWidget {
   static const routeName = 'screens/contact_us';
@@ -13,6 +14,8 @@ class ContactUsScreen extends StatefulWidget {
 class _ContactUsScreenState extends State<ContactUsScreen> {
   String subject;
   String note;
+  // storage saves favorite value
+  final LocalStorage favoStorage = LocalStorage('journal_filter');
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           SizedBox(height: 20.0),
           ElevatedButton(
               onPressed: () async {
+                //favoStorage.clear();
+                //timeStorage.clear();
+
                 final Email email = Email(
                     body: this.note,
                     subject: this.subject,

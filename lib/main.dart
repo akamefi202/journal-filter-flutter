@@ -5,6 +5,7 @@ import 'package:journal_filter/screens/contact_us.dart';
 import 'package:journal_filter/screens/disclaimer.dart';
 import 'package:journal_filter/screens/home.dart';
 import 'package:journal_filter/screens/selection.dart';
+import 'package:admob_flutter/admob_flutter.dart';
 
 var routes = <String, WidgetBuilder>{
   BookScreen.routeName: (BuildContext context) => BookScreen(),
@@ -16,6 +17,9 @@ var routes = <String, WidgetBuilder>{
 };
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Admob.initialize();
+
   runApp(MyApp());
 }
 

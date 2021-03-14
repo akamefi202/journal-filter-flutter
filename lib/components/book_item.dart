@@ -2,21 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:journal_filter/screens/book.dart';
 import 'package:journal_filter/models/book.dart';
+import 'package:localstorage/localstorage.dart';
 
-class BookItem extends StatelessWidget {
-  final Book data;
+class BookItem extends StatefulWidget {
+  final Function updateBookList;
+  final List<Book> bookList;
+  final int bookIndex;
 
-  BookItem({this.data});
+  BookItem({Key key, this.updateBookList, this.bookList, this.bookIndex})
+      : super(key: key);
+  @override
+  _BookItemState createState() => _BookItemState();
+}
+
+class _BookItemState extends State<BookItem> {
+  //Book data;
+  // storage saves favorite value
+  final LocalStorage favoStorage = LocalStorage('journal_filter');
+
+/*
+  @override
+  void initState() {
+    super.initState();
+
+    this.data = widget.bookList[widget.bookIndex];
+    print(this.data.toString());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    this.data = widget.bookList[widget.bookIndex];
+  }
+  */
 
   @override
   Widget build(BuildContext context) {
-    final contextData = MediaQuery.of(context);
+    Book bookData = widget.bookList[widget.bookIndex];
 
     return Container(
         child: GestureDetector(
             onTap: () {
-              Navigator.of(context)
-                  .pushNamed(BookScreen.routeName, arguments: this.data);
+              Navigator.of(context).pushNamed(BookScreen.routeName, arguments: {
+                'bookList': widget.bookList,
+                'bookIndex': widget.bookIndex
+              }).then(widget.updateBookList);
             },
             child: Container(
                 decoration: BoxDecoration(
@@ -40,14 +71,26 @@ class BookItem extends StatelessWidget {
                                 flex: 9,
                                 child: Container(
                                     child: Text(
-                                  data.title,
+                                  bookData.title,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.blue[900]),
                                 ))),
-                            data.favorite
-                                ? Icon(Icons.favorite, color: Colors.red)
-                                : Icon(Icons.favorite, color: Colors.grey),
+                            IconButton(
+                                icon: bookData.favorite
+                                    ? Icon(Icons.favorite, color: Colors.blue)
+                                    : Icon(Icons.favorite_outline,
+                                        color: Colors.blue),
+                                onPressed: () {
+                                  setState(() {
+                                    bookData.favorite = !bookData.favorite;
+
+                                    favoStorage.setItem(
+                                        bookData.articleId, bookData.favorite);
+
+                                    widget.updateBookList(null);
+                                  });
+                                }),
                           ]),
                       margin: EdgeInsets.only(bottom: 20.0),
                     ),
@@ -55,17 +98,18 @@ class BookItem extends StatelessWidget {
                         child: Row(children: [
                           Expanded(
                               flex: 7,
-                              child: Container(child: Text(data.postman))),
+                              child: Container(child: Text(bookData.postman))),
                           RatingBarIndicator(
                               itemBuilder: (context, i) =>
                                   Icon(Icons.star, color: Colors.amber),
                               itemCount: 5,
                               itemSize: 15.0,
                               direction: Axis.horizontal,
-                              rating: data.star)
+                              rating: bookData.star)
                         ]),
                         margin: EdgeInsets.only(bottom: 10.0)),
-                    Container(child: Text(data.info, textAlign: TextAlign.left))
+                    Container(
+                        child: Text(bookData.info, textAlign: TextAlign.left))
                   ],
                 ))));
   }

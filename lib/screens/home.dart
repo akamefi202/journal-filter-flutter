@@ -56,7 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.email), label: 'Contact Us'),
-          BottomNavigationBarItem(icon: Icon(Icons.description), label: 'Disclaimer')
+          BottomNavigationBarItem(
+              icon: Icon(Icons.description), label: 'Disclaimer')
         ],
         currentIndex: this.selIndex,
         selectedItemColor: Colors.white,
