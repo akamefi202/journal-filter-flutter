@@ -3,6 +3,7 @@ import 'package:journal_filter/constants/size.dart';
 import 'package:journal_filter/screens/selection.dart';
 import 'package:journal_filter/screens/contact_us.dart';
 import 'package:journal_filter/screens/disclaimer.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = 'screens/home';
@@ -18,6 +19,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    Future.delayed(Duration(milliseconds: 0), () async {
+      final status =
+          await AppTrackingTransparency.requestTrackingAuthorization();
+      print(status.toString());
+    });
   }
 
   String getAppBarTitle() {

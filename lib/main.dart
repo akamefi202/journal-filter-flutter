@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
           ),
       home: HomeScreen(),
       routes: routes,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
