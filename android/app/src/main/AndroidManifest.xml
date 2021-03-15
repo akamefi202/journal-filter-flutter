@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.journal_filter">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher">
@@ -37,5 +38,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+       <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+           android:value="ca-app-pub-2408260468793531~9224557590"/>
     </application>
 </manifest>

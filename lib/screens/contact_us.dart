@@ -26,19 +26,13 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
       decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(5.0),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey[400], blurRadius: 3.0, spreadRadius: 1.0)
-          ]),
+          boxShadow: [BoxShadow(color: Colors.grey[400], blurRadius: 3.0, spreadRadius: 1.0)]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
-              decoration: InputDecoration(
-                  hintText: 'Subject',
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: InputBorder.none),
+              decoration:
+                  InputDecoration(hintText: 'Subject', fillColor: Colors.white, filled: true, border: InputBorder.none),
               onChanged: (value) {
                 this.subject = value;
               }),
