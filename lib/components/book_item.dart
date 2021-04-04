@@ -85,8 +85,18 @@ class _BookItemState extends State<BookItem> {
                                   setState(() {
                                     bookData.favorite = !bookData.favorite;
 
+                                    // update favorite book list
+                                    List<dynamic> favoriteBooks =
+                                        favoStorage.getItem('favorite_books');
+
+                                    if (bookData.favorite) {
+                                      favoriteBooks.add(bookData.articleId);
+                                    } else {
+                                      favoriteBooks.remove(bookData.articleId);
+                                    }
+
                                     favoStorage.setItem(
-                                        bookData.articleId, bookData.favorite);
+                                        'favorite_books', favoriteBooks);
 
                                     widget.updateBookList(null);
                                   });

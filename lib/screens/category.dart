@@ -61,7 +61,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     //Future.delayed(Duration(milliseconds: ))
   }
 
-  void handleEvent(AdmobAdEvent event, Map<String, dynamic> args, String adType) {
+  void handleEvent(
+      AdmobAdEvent event, Map<String, dynamic> args, String adType) {
     switch (event) {
       case AdmobAdEvent.loaded:
         print('New Admob $adType Ad loaded!');
@@ -120,15 +121,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
       if (this.filterValue == 'All') {
         this.showBookList = this.dbBookList;
       } else if (this.filterValue == 'Favorites') {
-        this.showBookList = this.dbBookList.where((book) => book.favorite == true).toList();
+        this.showBookList =
+            this.dbBookList.where((book) => book.favorite == true).toList();
       }
     });
   }
 
   // get books of category from database
   Future<void> getDbBookList() async {
-    String url =
-        'https://journalfilter.com/Api.php?discipline=cardiology&' + this.category.type + '=' + this.category.url;
+    String url = 'https://journalfilter.com/Api.php?discipline=cardiology&' +
+        this.category.type +
+        '=' +
+        this.category.url;
 
     setState(() {
       loading = true;
@@ -138,13 +142,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
       final response = await http.get(Uri.parse(url));
       final jsonData = json.decode(response.body) as List<dynamic>;
 
+      List<dynamic> favoriteBooks = favoStorage.getItem('favorite_books');
+
       jsonData.forEach((bookData) {
         String contents = bookData['contents'];
         contents = contents.replaceAll('<AbstractText>', '');
 
         // get favorite and last viewed time from local storage
         bool favorite = false;
-        if (favoStorage.getItem(bookData['article_id']) == true) {
+        if (favoriteBooks.contains(bookData['article_id']) == true) {
           favorite = true;
         }
 
@@ -193,7 +199,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 )
                 */
                 IconButton(
-                    icon: Icon(this.filterValue != 'All' ? Icons.favorite : Icons.favorite_outline),
+                    icon: Icon(this.filterValue != 'All'
+                        ? Icons.favorite
+                        : Icons.favorite_outline),
                     onPressed: () {
                       if (this.filterValue == 'All') {
                         this.filterValue = 'Favorites';
@@ -218,7 +226,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     return Column(children: [
                       Container(
                           child: BookItem(
-                              updateBookList: this.updateShowBookList, bookList: this.showBookList, bookIndex: i),
+                              updateBookList: this.updateShowBookList,
+                              bookList: this.showBookList,
+                              bookIndex: i),
                           padding: EdgeInsets.all(10.0)),
                       SizedBox(height: 10.0),
                       this.showBanner == true
@@ -227,10 +237,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               child: AdmobBanner(
                                 adUnitId: getBannerAdUnitId(),
                                 adSize: AdmobBannerSize.LEADERBOARD,
-                                listener: (AdmobAdEvent event, Map<String, dynamic> args) {
+                                listener: (AdmobAdEvent event,
+                                    Map<String, dynamic> args) {
                                   handleEvent(event, args, 'Banner');
                                 },
-                                onBannerCreated: (AdmobBannerController controller) {
+                                onBannerCreated:
+                                    (AdmobBannerController controller) {
                                   // Dispose is called automatically for you when Flutter removes the banner from the widget tree.
                                   // Normally you don't need to worry about disposing this yourself, it's handled.
                                   // If you need direct access to dispose, this is your guy!
@@ -243,7 +255,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   } else {
                     return Container(
                         child: BookItem(
-                            updateBookList: this.updateShowBookList, bookList: this.showBookList, bookIndex: i),
+                            updateBookList: this.updateShowBookList,
+                            bookList: this.showBookList,
+                            bookIndex: i),
                         padding: EdgeInsets.all(10.0));
                   }
                 },

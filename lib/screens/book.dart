@@ -9,6 +9,8 @@ import 'package:journal_filter/constants/size.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:journal_filter/modules/encoding.dart';
+import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
+import 'package:flutter_launch/flutter_launch.dart';
 
 class BookScreen extends StatefulWidget {
   static const routeName = 'screens/book';
@@ -83,15 +85,28 @@ class _BookScreenState extends State<BookScreen> {
           onPressed: () async {
             /*String url = Uri.encodeFull('https://wa.me/?text=' +
                 'I found this interesting paper on JournalFilter: ' +
-                bookData.link['mainlink']);*/
-            String url = Uri.encodeFull('https://wa.me/?text=' +
+                books[bookIndex].link['mainlink']);*/
+            /*String url = 'whatsapp://send?text=' +
                 'I found this interesting paper on JournalFilter: ' +
-                books[bookIndex].link['mainlink']);
+                books[bookIndex].link['mainlink'];*/
 
-            if (await canLaunch(url)) {
+            /*if (await canLaunch(url)) {
               await launch(url);
             } else {
               //throw "Could not launch $url";
+            }*/
+
+            /*FlutterOpenWhatsapp.sendSingleMessage(
+                "523423423",
+                'I found this interesting paper on JournalFilter: ' +
+                    books[bookIndex].link['mainlink']);*/
+            try {
+              await FlutterLaunch.launchWathsApp(
+                  phone: '',
+                  message: 'I found this interesting paper on JournalFilter: ' +
+                      books[bookIndex].link['mainlink']);
+            } catch (error) {
+              print(error);
             }
           }),
       IconButton(
@@ -199,8 +214,19 @@ class _BookScreenState extends State<BookScreen> {
                   setState(() {
                     this.books[bookIndex].favorite =
                         !this.books[bookIndex].favorite;
-                    favoStorage.setItem(this.books[bookIndex].articleId,
-                        this.books[bookIndex].favorite);
+                    Book bookData = this.books[bookIndex];
+
+                    // update favorite book list
+                    List<dynamic> favoriteBooks =
+                        favoStorage.getItem('favorite_books');
+
+                    if (bookData.favorite) {
+                      favoriteBooks.add(bookData.articleId);
+                    } else {
+                      favoriteBooks.remove(bookData.articleId);
+                    }
+
+                    favoStorage.setItem('favorite_books', favoriteBooks);
                   });
                 })
           ])),

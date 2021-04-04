@@ -40,8 +40,10 @@ dependencies:
   localstorage: ^3.0.6
   # firebase_admob: ^0.11.0+2
   admob_flutter: ^1.0.1
-  app_tracking_transparency: ^1.1.0+1 
-
+  app_tracking_transparency: ^1.1.0+1
+  flutter_search_bar: ^2.1.0
+  flutter_open_whatsapp: ^0.1.2
+  flutter_launch: ^0.2.0
 
 dev_dependencies:
   flutter_test:
