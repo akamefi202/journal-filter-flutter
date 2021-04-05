@@ -11,6 +11,7 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:journal_filter/components/book_item.dart';
 import 'package:journal_filter/models/book.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:journal_filter/constants/size.dart';
 
 class SelectionScreen extends StatefulWidget {
   static const routeName = 'screens/selection';
@@ -236,7 +237,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
                     )),
                 this.searching
                     ? Container(
-                        height: data.size.height * 0.7,
+                        height: data.size.height * 0.65,
                         margin: EdgeInsets.only(left: 10.0, right: 10.0),
                         child: ListView.builder(
                           itemBuilder: (context, i) {
@@ -250,7 +251,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
                           itemCount: this.searchBookList.length,
                         ))
                     : Container(
-                        height: data.size.height * 0.7,
+                        height: data.size.height * 0.65,
                         child: ListView.builder(
                             itemBuilder: (context, i) {
                               return ListTileTheme(

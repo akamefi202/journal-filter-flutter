@@ -10,7 +10,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:journal_filter/modules/encoding.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
-import 'package:flutter_launch/flutter_launch.dart';
+//import 'package:flutter_launch/flutter_launch.dart';
 
 class BookScreen extends StatefulWidget {
   static const routeName = 'screens/book';
@@ -83,28 +83,28 @@ class _BookScreenState extends State<BookScreen> {
       IconButton(
           icon: Icon(Ionicons.logo_whatsapp, color: Colors.white),
           onPressed: () async {
-            /*String url = Uri.encodeFull('https://wa.me/?text=' +
+            try {
+            String url = Uri.encodeFull('whatsapp://send?text=' +
                 'I found this interesting paper on JournalFilter: ' +
-                books[bookIndex].link['mainlink']);*/
-            /*String url = 'whatsapp://send?text=' +
-                'I found this interesting paper on JournalFilter: ' +
-                books[bookIndex].link['mainlink'];*/
+                books[bookIndex].link['mainlink']);
 
-            /*if (await canLaunch(url)) {
+            if (await canLaunch(url)) {
               await launch(url);
             } else {
               //throw "Could not launch $url";
-            }*/
+            }
 
-            /*FlutterOpenWhatsapp.sendSingleMessage(
+
+            /*await FlutterOpenWhatsapp.sendSingleMessage(
                 "523423423",
                 'I found this interesting paper on JournalFilter: ' +
                     books[bookIndex].link['mainlink']);*/
-            try {
-              await FlutterLaunch.launchWathsApp(
+
+
+            /*await FlutterLaunch.launchWathsApp(
                   phone: '',
                   message: 'I found this interesting paper on JournalFilter: ' +
-                      books[bookIndex].link['mainlink']);
+                      books[bookIndex].link['mainlink']);*/
             } catch (error) {
               print(error);
             }
