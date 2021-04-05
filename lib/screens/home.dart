@@ -107,7 +107,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ]
                   : [])),
       body: getMainScreen(),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: SizedBox(
+          //height: defBottomTabBarHeight,
+          child: BottomNavigationBar(
         backgroundColor: Colors.blue,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -122,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
             selIndex = index;
           });
         },
-      ),
+      )),
     );
   }
 }

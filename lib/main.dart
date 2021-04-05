@@ -7,6 +7,7 @@ import 'package:journal_filter/screens/home.dart';
 import 'package:journal_filter/screens/selection.dart';
 import 'package:journal_filter/screens/favorites.dart';
 import 'package:admob_flutter/admob_flutter.dart';
+import 'package:flutter/services.dart';
 
 var routes = <String, WidgetBuilder>{
   BookScreen.routeName: (BuildContext context) => BookScreen(),
@@ -20,6 +21,7 @@ var routes = <String, WidgetBuilder>{
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   Admob.initialize();
 
   runApp(MyApp());

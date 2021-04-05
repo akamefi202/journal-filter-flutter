@@ -38,6 +38,10 @@ class _SelectionScreenState extends State<SelectionScreen> {
 
     _textEditingController = TextEditingController();
     getCategoryGroups();
+
+    print('defAppBarHeight: ' + defAppBarHeight.toString());
+    print('defSearchBarHeight: ' + defSearchBarHeight.toString());
+    print('defBottomTabBarHeight: ' + defBottomTabBarHeight.toString());
   }
 
   updateBookList(dynamic value) {
@@ -173,6 +177,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final data = MediaQuery.of(context);
+    print('height: ' + data.size.height.toString());
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -188,6 +193,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
                       .apply(bodyColor: Colors.white)),
               child: Column(children: [
                 Container(
+                    //height: defSearchBarHeight,
                     color: Colors.blue[300],
                     child: Container(
                       margin: EdgeInsets.all(10),
@@ -210,18 +216,19 @@ class _SelectionScreenState extends State<SelectionScreen> {
                                   await this.onSearch();
                                 }),
                             Container(
-                                child: TextField(
-                                    controller: this._textEditingController,
-                                    textInputAction: TextInputAction.search,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none),
-                                    style: TextStyle(color: Colors.black),
-                                    onChanged: (value) {
-                                      this.searchText = value;
-                                    },
-                                    onSubmitted: (value) async {
-                                      await this.onSearch();
-                                    }),
+                                child: Center(
+                                    child: TextField(
+                                        controller: this._textEditingController,
+                                        textInputAction: TextInputAction.search,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none),
+                                        style: TextStyle(color: Colors.black),
+                                        onChanged: (value) {
+                                          this.searchText = value;
+                                        },
+                                        onSubmitted: (value) async {
+                                          await this.onSearch();
+                                        })),
                                 width: data.size.width * 0.65),
                             IconButton(
                                 color: Colors.grey,
@@ -237,7 +244,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
                     )),
                 this.searching
                     ? Container(
-                        height: data.size.height * 0.65,
+                        height: data.size.height * 0.7,
                         margin: EdgeInsets.only(left: 10.0, right: 10.0),
                         child: ListView.builder(
                           itemBuilder: (context, i) {
@@ -251,7 +258,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
                           itemCount: this.searchBookList.length,
                         ))
                     : Container(
-                        height: data.size.height * 0.65,
+                        height: data.size.height * 0.7,
                         child: ListView.builder(
                             itemBuilder: (context, i) {
                               return ListTileTheme(

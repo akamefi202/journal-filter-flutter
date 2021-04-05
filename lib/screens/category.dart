@@ -10,6 +10,7 @@ import 'package:journal_filter/constants/size.dart';
 import 'dart:convert';
 import 'package:localstorage/localstorage.dart';
 import 'package:admob_flutter/admob_flutter.dart';
+import 'package:journal_filter/constants/size.dart';
 
 class CategoryScreen extends StatefulWidget {
   static const routeName = 'screens/category';
