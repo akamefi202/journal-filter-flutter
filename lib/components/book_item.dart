@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:journal_filter/screens/book.dart';
 import 'package:journal_filter/models/book.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BookItem extends StatefulWidget {
   final Function updateBookList;
@@ -39,6 +40,7 @@ class _BookItemState extends State<BookItem> {
 
   @override
   Widget build(BuildContext context) {
+    final data = MediaQuery.of(context);
     Book bookData = widget.bookList[widget.bookIndex];
 
     return Container(
@@ -50,77 +52,144 @@ class _BookItemState extends State<BookItem> {
               }).then(widget.updateBookList);
             },
             child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(5.0),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey[300],
-                          blurRadius: 3.0,
-                          spreadRadius: 1.0)
-                    ]),
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                flex: 9,
-                                child: Container(
-                                    child: Text(
-                                  bookData.title,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue[900]),
-                                ))),
-                            IconButton(
-                                icon: bookData.favorite
-                                    ? Icon(Icons.favorite, color: Colors.blue)
-                                    : Icon(Icons.favorite_outline,
-                                        color: Colors.blue),
-                                onPressed: () {
-                                  setState(() {
-                                    bookData.favorite = !bookData.favorite;
-
-                                    // update favorite book list
-                                    List<dynamic> favoriteBooks =
-                                        favoStorage.getItem('favorite_books');
-
-                                    if (bookData.favorite) {
-                                      favoriteBooks.add(bookData.articleId);
-                                    } else {
-                                      favoriteBooks.remove(bookData.articleId);
-                                    }
-
-                                    favoStorage.setItem(
-                                        'favorite_books', favoriteBooks);
-
-                                    widget.updateBookList(null);
-                                  });
-                                }),
+                child: Stack(children: [
+              Positioned(
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5.0),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey[300],
+                                blurRadius: 3.0,
+                                spreadRadius: 1.0)
                           ]),
-                      margin: EdgeInsets.only(bottom: 20.0),
-                    ),
-                    Container(
-                        child: Row(children: [
-                          Expanded(
-                              flex: 7,
-                              child: Container(child: Text(bookData.postman))),
-                          RatingBarIndicator(
-                              itemBuilder: (context, i) =>
-                                  Icon(Icons.star, color: Colors.amber),
-                              itemCount: 5,
-                              itemSize: 15.0,
-                              direction: Axis.horizontal,
-                              rating: bookData.star)
-                        ]),
-                        margin: EdgeInsets.only(bottom: 10.0)),
-                    Container(
-                        child: Text(bookData.info, textAlign: TextAlign.left))
-                  ],
-                ))));
+                      padding: EdgeInsets.all(10.0),
+                      margin: EdgeInsets.only(right: 6.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                      flex: 9,
+                                      child: Container(
+                                          child: Text(
+                                        bookData.title,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue[900]),
+                                      ))),
+                                  IconButton(
+                                      icon: bookData.favorite
+                                          ? Icon(Icons.favorite,
+                                              color: Colors.blue)
+                                          : Icon(Icons.favorite_outline,
+                                              color: Colors.blue),
+                                      onPressed: () {
+                                        setState(() {
+                                          bookData.favorite =
+                                              !bookData.favorite;
+
+                                          // update favorite book list
+                                          List<dynamic> favoriteBooks =
+                                              favoStorage
+                                                  .getItem('favorite_books');
+
+                                          if (bookData.favorite) {
+                                            favoriteBooks
+                                                .add(bookData.articleId);
+                                          } else {
+                                            favoriteBooks
+                                                .remove(bookData.articleId);
+                                          }
+
+                                          favoStorage.setItem(
+                                              'favorite_books', favoriteBooks);
+
+                                          widget.updateBookList(null);
+                                        });
+                                      }),
+                                ]),
+                            margin: EdgeInsets.only(bottom: 20.0),
+                          ),
+                          Container(
+                              child: Row(children: [
+                                Expanded(
+                                    flex: 7,
+                                    child: Container(
+                                        child: Text(bookData.postman))),
+                                RatingBarIndicator(
+                                    itemBuilder: (context, i) =>
+                                        Icon(Icons.star, color: Colors.amber),
+                                    itemCount: 5,
+                                    itemSize: 15.0,
+                                    direction: Axis.horizontal,
+                                    rating: bookData.star)
+                              ]),
+                              margin: EdgeInsets.only(bottom: 20.0)),
+                          Container(
+                              child: Row(children: [
+                            Expanded(
+                                flex: 7,
+                                child: Text(bookData.info,
+                                    textAlign: TextAlign.left)),
+                            Expanded(flex: 3, child: Container())
+                          ]))
+                        ],
+                      ))),
+              Positioned(
+                  bottom: 5.0,
+                  right: 0.0,
+                  width: 120.0,
+                  height: 30.0,
+                  child: bookData.link['direct_pdf_link'] == null ||
+                          bookData.link['direct_pdf_link'] == '' ||
+                          bookData.link['direct_pdf_link'] == 'none'
+                      ? GestureDetector(
+                          onTap: () async {
+                            String url = bookData.link['doi'];
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              //throw "Could not launch $url";
+                            }
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/inactive_bookmark.png'),
+                                      fit: BoxFit.cover)),
+                              padding: EdgeInsets.only(bottom: 5.0),
+                              child: Center(
+                                  child: Text('Pdf restricted',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey)))))
+                      : GestureDetector(
+                          onTap: () async {
+                            String url = bookData.link['direct_pdf_link'];
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              //throw "Could not launch $url";
+                            }
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/active_bookmark.png'),
+                                      fit: BoxFit.cover)),
+                              padding: EdgeInsets.only(bottom: 5.0),
+                              child: Center(
+                                  child: Text('View pdf',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue[900]))))))
+            ]))));
   }
 }

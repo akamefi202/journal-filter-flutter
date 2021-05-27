@@ -84,24 +84,22 @@ class _BookScreenState extends State<BookScreen> {
           icon: Icon(Ionicons.logo_whatsapp, color: Colors.white),
           onPressed: () async {
             try {
-            String url = Uri.encodeFull('whatsapp://send?text=' +
-                'I found this interesting paper on JournalFilter: ' +
-                books[bookIndex].link['mainlink']);
+              String url = Uri.encodeFull('whatsapp://send?text=' +
+                  'I found this interesting paper on JournalFilter: ' +
+                  books[bookIndex].link['mainlink']);
 
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
-              //throw "Could not launch $url";
-            }
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                //throw "Could not launch $url";
+              }
 
-
-            /*await FlutterOpenWhatsapp.sendSingleMessage(
+              /*await FlutterOpenWhatsapp.sendSingleMessage(
                 "523423423",
                 'I found this interesting paper on JournalFilter: ' +
                     books[bookIndex].link['mainlink']);*/
 
-
-            /*await FlutterLaunch.launchWathsApp(
+              /*await FlutterLaunch.launchWathsApp(
                   phone: '',
                   message: 'I found this interesting paper on JournalFilter: ' +
                       books[bookIndex].link['mainlink']);*/
@@ -156,16 +154,64 @@ class _BookScreenState extends State<BookScreen> {
                 padding: EdgeInsets.only(left: 20.0, right: 20.0)),
             SizedBox(height: 10.0),
             Container(
-                child: Text(book.info),
+                child: Row(children: [
+                  Expanded(flex: 7, child: Container(child: Text(book.info))),
+                  book.link['direct_pdf_link'] == null ||
+                          book.link['direct_pdf_link'] == '' ||
+                          book.link['direct_pdf_link'] == 'none'
+                      ? GestureDetector(
+                          onTap: () async {
+                            String url = book.link['doi'];
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              //throw "Could not launch $url";
+                            }
+                          },
+                          child: Container(
+                              width: 120.0,
+                              height: 30.0,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/inactive_bookmark.png'),
+                                      fit: BoxFit.cover)),
+                              padding: EdgeInsets.only(bottom: 5.0),
+                              child: Center(
+                                  child: Text('Pdf restricted',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey)))))
+                      : GestureDetector(
+                          onTap: () async {
+                            String url = book.link['direct_pdf_link'];
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              //throw "Could not launch $url";
+                            }
+                          },
+                          child: Container(
+                              width: 120.0,
+                              height: 30.0,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/active_bookmark.png'),
+                                      fit: BoxFit.cover)),
+                              padding: EdgeInsets.only(bottom: 5.0),
+                              child: Center(
+                                  child: Text('View pdf',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue[900])))))
+                ]),
                 padding: EdgeInsets.only(left: 20.0, right: 20.0)),
-            SizedBox(
-              height: 10.0,
-            ),
             Container(
                 padding: EdgeInsets.only(left: 12.0, right: 12.0),
                 child: Html(
                   data: book.contents,
-                ))
+                )),
           ],
         ));
   }

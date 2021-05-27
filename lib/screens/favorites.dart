@@ -77,7 +77,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             contents: contents,
             info: bookData['info'],
             link: Map<String, String>.from(bookData['link']),
-            star: bookData['star'],
+            star: bookData['star'] * 1.0,
             articleId: bookData['article_id'],
             favorite: true));
       });
